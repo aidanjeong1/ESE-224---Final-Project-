@@ -294,7 +294,7 @@ bool Fleet::rechargeDrone(int id)
 void Fleet::countByStatus() const
 {
     // TODO: counts of IDLE, CHARGING, MAINTENANCE and the average battery  **DONE**
-    int batteryTotal(0);
+    double batteryTotal(0);
     int idle(0), charging(0), maintenance(0);
     for (int i = 0; i < drones.size(); i++) {
         batteryTotal += drones[i].getBattery();
@@ -308,7 +308,12 @@ void Fleet::countByStatus() const
             maintenance++;
         }
     }
-    cout << "Battery Total: " << batteryTotal << endl;
+    if (getSize() > 0) {
+        cout << "Battery Average: " << batteryTotal / getSize() << "%" << endl;
+    }
+    else {
+        cout << "Battery Average: N/A (no drones)" << endl;
+    }
     cout << "Status Counts: Idle: " << idle << " | Charging: " << charging << " | Maintenance: " << maintenance << endl;
 }
 
@@ -324,6 +329,7 @@ void Fleet::processOrders(const string& orderFile, const string& logFile)
         cout << "Error opening file" << endl;
         return;
     }
+    fout << fixed << setprecision(1);
     double initBattery, finalBattery;
     int index = 0;
     int count = 0;
@@ -401,9 +407,10 @@ void Fleet::writeFleetToFile(const string& filename) const
         cout << "Error opening file" << endl;
         return;
     }
+    fout << fixed << setprecision(1);
     for (int i = 0; i < drones.size(); i++) {
         fout << drones[i].getName() << " " << drones[i].getID() << " " << drones[i].getModel() << " " << drones[i].getBattery() << " "
-            << drones[i].getMaxPayload() << " " << drones[i].getPosition(0) << " " << drones[i].getPosition(1) << " " << drones[i].getStatus() << endl;
-        fout << "Deliveries Completed: " << drones[i].getDeliveriesCompleted() << endl;
+            << drones[i].getMaxPayload() << " " << drones[i].getPosition(0) << " " << drones[i].getPosition(1) << " " << drones[i].getStatus() << " ";
+        fout << drones[i].getDeliveriesCompleted() << endl;
     }
 }

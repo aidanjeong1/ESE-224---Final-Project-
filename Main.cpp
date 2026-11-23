@@ -109,11 +109,23 @@ int main()
     string fout, fin;
     string inpName;
     int inpID;
-    while (choice != 0)
-    {
+    while (choice != 0){
         showMenu();
         cout << "Choose an option: ";
-        cin >> choice;
+        if (!(cin >> choice)) {
+            if (cin.eof()) {
+                break;
+            }
+            cin.clear();
+
+            char ch;
+            while (cin.get(ch) && ch != '\n') {
+            }
+
+            cout << "Invalid input. Enter a menu number." << endl;
+            choice = -1;
+            continue;
+        }
 
         switch (choice) {
         case 1:
@@ -187,66 +199,33 @@ int main()
             fleet.writeFleetToFile(fin);
             break;
         case 14: {
-            cout << "Enter name: ";
-            cin >> name;
-            cout << endl;
-            while (1) {
-                cout << "Enter ID: ";
-                cin >> ID;
-                if (ID > -1 && ID < 1000) {
-                    break;
+            cout << "Enter name, ID, model, battery, max payload, x, y, and status: ";
+            if (!(cin >> name >> ID >> model >> battery >> maxPayload >> x >> y >> status)) {
+                if (!cin.eof()) {
+                    cin.clear();
+
+                    char ch;
+                    while (cin.get(ch) && ch != '\n') {
+                        
+                    }
+
+                    cout << "Invalid input. Drone was not added." << endl;
                 }
-                cout << "Invalid ID" << endl;
+                break;
             }
-            cout << endl;
-            cout << endl;
-            while (1) {
-                cout << "Enter model: ";
-                cin >> model;
-                if (model == "Condor" || model == "Kestrel" || model == "Falcon") {
-                    break;
-                }
-                cout << "Invalid model name" << endl;
-            }
-            cout << endl;
+
+            Drone newDrone;
+            newDrone.setName(name);
             
-            while (1) {
-                cout << "Enter battery: ";
-                cin >> battery;
-                if (battery >= 0 && battery <= 100) {
-                    break;
-                }
-                cout << "Invalid battery" << endl;
+            if (newDrone.setID(ID) &&
+                newDrone.setModel(model) &&
+                newDrone.setBattery(battery) &&
+                newDrone.setMaxPayload(maxPayload) &&
+                newDrone.setPosition(0, x) &&
+                newDrone.setPosition(1, y) &&
+                newDrone.setStatus(status)) {
+                fleet.addDrone(newDrone); 
             }
-
-            cout << endl;
-
-            while (1) {
-                cout << "Enter max payload: ";
-                cin >> maxPayload;
-                if (maxPayload >= 0) {
-                    break;
-                }
-                cout << "Invalid payload" << endl;
-            }
-
-            cout << endl;
-            cout << "Enter position (x y): ";
-            cin >> x >> y;
-            cout << endl;
-            
-            while (1) {
-                cout << "Enter status: ";
-                cin >> status;
-                if (status == "IDLE" || status == "MAINTENANCE" || status == "CHARGING") {
-                    break;
-                }
-                cout << "Invalid status" << endl;
-            }
-            cout << endl;
-
-            Drone newDrone(name, ID, model, battery, maxPayload, x, y, status);
-            fleet.addDrone(newDrone);
             break;
         }
         case 0:

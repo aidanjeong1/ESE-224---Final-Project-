@@ -64,6 +64,7 @@ bool Drone::setID(int id)
         ID = id;
         return true;
     }
+    cout << "Error: ID must be positive." << endl;
     return false;
 }
 
@@ -74,7 +75,11 @@ bool Drone::setModel(const string& m)
         model = m;
         return true;
     }
-    return false;
+    else{
+        cout << "Model must be Kestrel, Falcon, or Condor" << endl;
+        return false;
+    }
+    
 }
 
 bool Drone::setBattery(double b)
@@ -84,6 +89,7 @@ bool Drone::setBattery(double b)
         battery = b;
         return true;
     }
+    cout << "Battery outside of range." << endl;
     return false;
 }
 
@@ -94,6 +100,7 @@ bool Drone::setMaxPayload(double p)
         maxPayload = p;
         return true;
     }
+    cout << "Max payload must be greater than 0." << endl;
     return false;
 }
 
@@ -118,7 +125,11 @@ bool Drone::setStatus(const string& s)
         status = s;
         return true;
     }
-    return false;
+    else{
+        cout << "Status must be IDLE, CHARGING, or MAINTENANCE" << endl;
+        return false;
+    }
+    
 }
 
 // ---------- Delivery methods ----------
